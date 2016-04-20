@@ -11,6 +11,9 @@ Update and configure the system automatically
 
 ## Usage
 Download the script and give him execution permission:
+
 `chmod +x autoconfig.sh`
+
 Run the script:
+
 `sudo ./autoconfig.sh`
