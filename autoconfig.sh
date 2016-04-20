@@ -13,6 +13,7 @@ TEMPFILE=/etc/apt/apt.conf.d/00newconftemp
 echo 'Dpkg::Progress-Fancy "1";' > /etc/apt/apt.conf.d/99progressbar
 # Do not ask for continue or new configurations
 echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90yes
+echo 'APT::Get::force-yes "true";' >> /etc/apt/apt.conf.d/90yes
 echo -e 'Dpkg::Options {\n\t"--force-confdef";\n\t"--force-confnew";\n}' > $TEMPFILE
 
 # Keep sudo
