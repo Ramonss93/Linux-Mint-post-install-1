@@ -7,7 +7,7 @@ Update and configure the system automatically
 - Removes useless packages and services
 - Sets the Trashware wallpaper
 - Sets keyboard shortcut for a better user-friendliness
-- Cleans the system
+- Cleans and tweaks the system
 
 ## Usage
 Download the script and give him execution permission:
