@@ -5,9 +5,6 @@ if [ `id -u` -ne 0 ]; then
     exit 1
 fi
 
-# Flush commands to bash history immediately
-export PROMPT_COMMAND='history -a'
-
 # Adds a progressbar
 TEMPFILE=/etc/apt/apt.conf.d/00newconftemp
 echo 'Dpkg::Progress-Fancy "1";' > /etc/apt/apt.conf.d/99progressbar
