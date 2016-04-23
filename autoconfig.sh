@@ -9,9 +9,10 @@ fi
 TEMPFILE=/etc/apt/apt.conf.d/00newconftemp
 echo 'Dpkg::Progress-Fancy "1";' > /etc/apt/apt.conf.d/99progressbar
 # Do not ask for continue or new configurations
-echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90yes
-echo 'APT::Get::force-yes "true";' >> /etc/apt/apt.conf.d/90yes 
+echo -e 'APT::Get::Assume-Yes "true";\nAPT::Get::force-yes "true";' > /etc/apt/apt.conf.d/90yes
 echo -e 'Dpkg::Options {\n\t"--force-confdef";\n\t"--force-confnew";\n}' > $TEMPFILE
+echo "vm.swappiness=10" >> /etc/sysctl.conf
+echo "CONCURRENCY=makefile" >> /etc/init.d/rc
 
 # Keep sudo
 sudo_stat=.sudo_status.txt
@@ -64,8 +65,6 @@ dist_upgrade() {
 clean() {
 	sudo apt-get autoclean
 	sudo apt-get clean
-	echo "vm.swappiness=10" >> /etc/sysctl.conf
-	echo "CONCURRENCY=makefile" >> /etc/init.d/rc
 }
 
 sudo -v
@@ -85,7 +84,8 @@ su -c "dconf write /org/mate/desktop/background/secondary-color \"'#FFFFFF'\"" -
 su -c "dconf load /org/mate/desktop/keybindings/custom0/ < $TASKMANAGER_PATH" - trashware
 su -c "dconf write /org/mate/settings-daemon/plugins/media-keys/power \"'<Primary><Alt>q'\"" - trashware
 
-rm -f /root/.bash_history; rm -f $TEMPFILE; rm -rf $HOME/.cache
+rm -f /root/.bash_history
+rm -f $TEMPFILE; rm -rf $HOME/.cache
 if [ -e $sudo_stat ] 
 then
 	rm -f $sudo_stat
