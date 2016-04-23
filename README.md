@@ -10,7 +10,7 @@ Update and configure the system automatically
 - Cleans and tweaks the system
 
 ## Usage
-Download the script and give him execution permission:
+Download the script and give execution permission:
 
 `chmod +x autoconfig.sh`
 
