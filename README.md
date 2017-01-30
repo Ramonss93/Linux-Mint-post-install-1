@@ -1,5 +1,5 @@
-# AutoConfig
-Update and configure the system automatically
+# Linux Mint post install
+Update and configure Linux Mint 18 according to [Trashware Cesena](http://trashwarecesena.it) requirements.
 
 # Features
 
