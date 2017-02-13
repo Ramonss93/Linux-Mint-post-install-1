@@ -1,93 +1,93 @@
 #!/bin/bash
 
+#
+# Post-install script for Linux Mint 18 PC installed by Trashware Cesena
+# 
+# All the OS configuration changes must be system-wide where possible.
+# Otherwise note it in the comments.
+#
+
+# Require running the script as root user
+
 if [ `id -u` -ne 0 ]; then
-    printf "The script must be run as root!\n"
+    printf "The script must be run as root user!\n"
     exit 1
 fi
 
-# Adds a progressbar
-TEMPFILE=/etc/apt/apt.conf.d/00newconftemp
-echo 'Dpkg::Progress-Fancy "1";' > /etc/apt/apt.conf.d/99progressbar
+#
+# Configuring apt-get
+#
+
+# Enable apt-get progressbar
+echo 'Dpkg::Progress-Fancy "1";' |  tee -a /etc/apt/apt.conf.d/99progressbar
+
 # Do not ask for continue or new configurations
-echo -e 'APT::Get::Assume-Yes "true";\nAPT::Get::force-yes "true";' > /etc/apt/apt.conf.d/90yes
-echo -e 'Dpkg::Options {\n\t"--force-confdef";\n\t"--force-confnew";\n}' > $TEMPFILE
-echo "vm.swappiness=10" >> /etc/sysctl.conf
-echo "CONCURRENCY=makefile" >> /etc/init.d/rc
+echo -e 'APT::Get::Assume-Yes "true";\nAPT::Get::force-yes "true";'  |  tee -a /etc/apt/apt.conf.d/90yes
+TEMPFILE=/etc/apt/apt.conf.d/00newconftemp
+echo -e 'Dpkg::Options {\n\t"--force-confdef";\n\t"--force-confnew";\n}' |  tee -a $TEMPFILE
+rm -f $TEMPFILE;
 
-# Keep sudo
-sudo_stat=.sudo_status.txt
-trap 'rm -f $sudo_stat > /dev/null 2>&1' 0
-trap "exit 2" 1 2 3 15
+# TODO: autmatically chose "Y" for this kind of prompts:
+#File di configurazione "/etc/compizconfig/config"
+# ==> Modificato (dall'utente o da uno script) dopo l'installazione.
+# ==> Il distributore del pacchetto ha fornito una versione aggiornata.
+#   Come procedere? Le opzioni sono:
+#    Y o I   : installa la versione del responsabile del pacchetto
+#    N od O  : mantiene la versione attualmente installata
+#      D     : mostra le differenze tra le versioni
+#      Z     : avvia una shell per esaminare la situazione
+# L'azione predefinita consiste nel mantenere la versione attuale.
+#*** config (Y/I/N/O/D/Z) [predefinito=N] ?
 
-# Default variables
-DEBIAN_FRONTEND=noninteractive
-export BACKGROUND_PATH="$HOME/.config/trashware.png"
-export REMOTE_PATH="http://trashwarecesena.it/laboratorio/background.png"
+# Update the system
+apt-get -q update &&  apt-get -f upgrade
+while [[ $? > 0 ]]; do
+	apt-get update &&  apt-get -f upgrade
+	apt-get -f install &&  apt-get -f upgrade
+done
 
-# Keyboard shortcuts
-TASKMANAGER="[/]
-action='mate-system-monitor'
-binding='<Primary><Alt>Delete'
-name='Task Manager'"
-TASKMANAGER_PATH="/tmp/customShortcut"
-su -c "echo -e \"$TASKMANAGER\" > $TASKMANAGER_PATH" - trashware
+# Clean apt-get
+apt-get autoclean
+apt-get clean
 
-keep_sudo() {
-	while [ -f $sudo_stat ];
-	do
-		sudo -v
-		sleep 5
-	done &
-}
+# Some usefull OS settings
+echo "vm.swappiness=10" |  tee -a /etc/sysctl.conf
+sed -i 's/CONCURRENCY=none/CONCURRENCY=makefile/g' /etc/init.d/rc
 
-# Update
-upgrade_system() {
-	sudo apt-get -q update && sudo apt-get -f upgrade
-	# If the command fail: try to uprade and dist-upgrade
-	while [[ $? > 0 ]]; do
-		sudo apt-get update && sudo apt-get -f upgrade
-		sudo apt-get -f install && sudo apt-get -f upgrade
-	done
-}
+#
+# User experience customizations
+#
 
-# Install basic software
-dist_upgrade() {
-	sudo apt-get -f dist-upgrade
-	while [[ $? > 0 ]]; do
-		sudo apt-get update && sudo apt-get -f upgrade
-		sudo apt-get -f install && sudo apt-get -f dist-upgrade
-	done
-	sudo apt-get install -f curl
-	sudo apt-get purge apt-xapian-index
-}
+# Set the default background
+#GSCHEMAS_PATH=/usr/share/glib-2.0/schemas
+#BACKGROUND_NAME="trashware_logo.png"
+#BACKGROUNDS_OS_FOLDER="/usr/share/backgrounds/"
+#GSCHEMA_BACKGROUND_OVERRIDE_FILENAME=mint-artwork-mate.gschema.override
+# curl -o $BACKGROUNDS_OS_FOLDER/$BACKGROUND_NAME http://labs.trashwarecesena.it/images/$BACKGROUND_NAME
+# cp $GSCHEMA_BACKGROUND_OVERRIDE_FILENAME $GSCHEMAS_PATH
+#echo "picture-filename='$BACKGROUNDS_OS_FOLDER'" |  tee -a $GSCHEMAS_PATH/$GSCHEMA_BACKGROUND_OVERRIDE_FILENAME
+# glib-compile-schemas $GSCHEMAS_PATH
 
-# Clean system
-clean() {
-	sudo apt-get autoclean
-	sudo apt-get clean
-}
 
-sudo -v
-keep_sudo
-upgrade_system
-dist_upgrade
-clean
+# TODO: set lighter default greeter for lightdm
 
-# Download the background
-su -c "curl $REMOTE_PATH > $BACKGROUND_PATH" - trashware
-# Set the background (scaled)
-su -c "dconf write /org/mate/desktop/background/picture-filename \"'$BACKGROUND_PATH'\"" - trashware
-su -c "dconf write /org/mate/desktop/background/picture-options \"'scaled'\"" - trashware
-# Set background default colors
-su -c "dconf write /org/mate/desktop/background/primary-color \"'#FFFFFF'\"" - trashware
-su -c "dconf write /org/mate/desktop/background/secondary-color \"'#FFFFFF'\"" - trashware
-su -c "dconf load /org/mate/desktop/keybindings/custom0/ < $TASKMANAGER_PATH" - trashware
-su -c "dconf write /org/mate/settings-daemon/plugins/media-keys/power \"'<Primary><Alt>q'\"" - trashware
+# TODO: remove firefox mint customizations
 
-rm -f /root/.bash_history
-rm -f $TEMPFILE; rm -rf $HOME/.cache
-if [ -e $sudo_stat ] 
-then
-	rm -f $sudo_stat
-fi
+# TODO: set simplet desktop panels confiuration (e.g.: without terminal icon near menu icon)
+
+# TODO: Set keyboard shortcuts
+# create a /usr/share/glib-2.0/schemas/org.gnome.desktop.wm.keybindings.gschema.override file with the mate-system-monitor Ctrl+Alt+Canc keybinding
+
+# Removing meta packages, wich are useless after installation and prevent removing some software
+apt-get remove -y mint-meta-core mint-meta-mate
+
+# Remove Linux Mint welcome screen
+apt-get remove -y mintwelcome
+
+#
+# Cleaning up cache, histories, temps, ...
+#
+
+rm -rf $HOME/.cache
 rm -f $HOME/.bash_history
+apt-get autoremove
