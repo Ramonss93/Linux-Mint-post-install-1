@@ -1,24 +1,20 @@
-# Aggiungere il PC al database
+# Linux Mint post install script
 
-Compila il [modulo](http://bit.do/addpc) direttamente dal PC che hai installato. Il link è **http://bit.do/addpc**.
+Script di post-install per le installazioni di Linux Mint.
 
-# Esecuzione script di post installazione
-
-Link: **http://bit.do/lmpi**
-
-Lo script a cui il link referenzia è direttamente l'ultima versione della branch "master" dello script presente nel [Github di Trashware Cesena](https://github.com/TrashwareCesena/).
+Esiste uno **shortened link** da cui scaricare l'ultima versione dello script, della branch "master": **http://bit.do/lmpi**.
 
 Se vuoi contribuire fatti aggiungere al team!
 
-## Passaggi
-- Scaricare lo script
+## Passaggi per l'esecuzione
+- Scaricare lo script:
 ```
-wget bit.do/lmpi.sh
+wget bit.do/lmpi
 ```
-- Eseguire lo script
+- Eseguire lo script:
 ```
-bash lmpi.sh
+bash lmpi
 ```
-- **CANCELLARE LO SCRIPT**
+- **Cancellare** lo script.
 
 ## Under the hoods
