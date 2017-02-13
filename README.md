@@ -1,19 +1,24 @@
-# Linux Mint post install
-Update and configure Linux Mint 18 according to [Trashware Cesena](http://trashwarecesena.it) requirements.
+# Aggiungere il PC al database
 
-# Features
+Compila il [modulo](http://bit.do/addpc) direttamente dal PC che hai installato. Il link è **http://bit.do/addpc**.
 
-- Updates the system with smart management of conflicts or errors
-- Removes useless packages and services
-- Sets the Trashware wallpaper
-- Sets keyboard shortcut for a better user-friendliness
-- Cleans and tweaks the system
+# Esecuzione script di post installazione
 
-## Usage
-Download the script and give execution permission:
+Link: **http://bit.do/lmpi**
 
-`chmod +x autoconfig.sh`
+Lo script a cui il link referenzia è direttamente l'ultima versione della branch "master" dello script presente nel [Github di Trashware Cesena](https://github.com/TrashwareCesena/).
 
-Run the script:
+Se vuoi contribuire fatti aggiungere al team!
 
-`sudo ./autoconfig.sh`
+## Passaggi
+- Scaricare lo script
+```
+wget bit.do/lmpi.sh
+```
+- Eseguire lo script
+```
+bash lmpi.sh
+```
+- **CANCELLARE LO SCRIPT**
+
+## Under the hoods
